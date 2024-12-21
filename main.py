@@ -2,9 +2,9 @@ import pygame
 from player import Player
 from enemy import Enemy
 from start_screen import start_screen
-from game_over import game_over_screen  # Ensure this is imported correctly
+from game_over import game_over_screen
+from resources import *
 
-# Initialize Pygame
 pygame.init()
 
 # Screen setup
@@ -14,18 +14,23 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("AGE OF CHAMPIONS")
 clock = pygame.time.Clock()
 
-# Show starting screen and get player block count
-player_block_count = start_screen()
+
+#Creating variable to load background images
+background_image = pygame.image.load('Resources/Battle_Background.png')
+
+# Scale to fit entire screen
+background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
+
 
 # Create player and enemy
-player = Player(20, 20, player_block_count)  # Special block starts at top-left
-enemy = Enemy(760, 20, 20)  # Special block starts at top-right
+player = Player(20, 20, start_screen())  # Player special block at top-left
+enemy = Enemy(760, 20, 20)  # Enemy special block at top-right
 
 # Fonts for displaying block counts
-font = pygame.font.Font(None, 36)
+font = pygame.font.Font(None, 24)
 
 def check_collisions(blocks_a, blocks_b):
-    """Handle collisions and apply damage between blocks."""
+    """Return the blocks that should be removed from each list due to collision."""
     to_remove_a = []
     to_remove_b = []
     for block_a in blocks_a:
@@ -35,72 +40,108 @@ def check_collisions(blocks_a, blocks_b):
                 to_remove_b.append(block_b)
     return to_remove_a, to_remove_b
 
-def move_to_center(block, speed=2):
-    """Move a block towards the center of the screen."""
-    center_x, center_y = screen_width // 2, screen_height // 2
-    dx = center_x - block.x
-    dy = center_y - block.y
+def move_block_towards(block, target, speed=2):
+    """Move a block towards a target block or position using integers."""
+    dx = target.x - block.x
+    dy = target.y - block.y
     dist = max(abs(dx), abs(dy))
-    if dist > 0:  # Avoid division by zero
-        block.x += speed * (dx / dist)
-        block.y += speed * (dy / dist)
+    if dist > 0:
+        block.x += int(speed * (dx / dist))
+        block.y += int(speed * (dy / dist))
 
-# Game loop
+def move_towards_first(block, targets, speed=2):
+    """Move block towards the first target in the list if any exist."""
+    if targets:
+        target = targets[0]
+        move_block_towards(block, target, speed)
+
 running = True
 winner = None
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
-    # Movement logic for player normal blocks
+    # Add the battle background image
+    screen.blit(background_image, (0, 0))
+
+    # Player movement logic
     if player.normal_blocks:
-        player.move_blocks(enemy.normal_blocks)
-    elif not player.normal_blocks:
-        move_to_center(player.special_block)
+        if enemy.normal_blocks:
+            player.move_blocks(enemy.normal_blocks)
+        else:
+            # Enemy has no normal blocks, move player normal blocks towards enemy special block
+            player.move_blocks([enemy.special_block])
+    else:
+        # Player has no normal blocks
+        if enemy.normal_blocks:
+            # Move player special block towards enemy normal blocks
+            move_towards_first(player.special_block, enemy.normal_blocks)
+        else:
+            # Both have no normal blocks, move special blocks towards each other
+            move_block_towards(player.special_block, enemy.special_block)
 
-    # Movement logic for enemy normal blocks
+    # Enemy movement logic
     if enemy.normal_blocks:
-        enemy.move_blocks(player.normal_blocks)
-    elif not enemy.normal_blocks:
-        move_to_center(enemy.special_block)
+        if player.normal_blocks:
+            enemy.move_blocks(player.normal_blocks)
+        else:
+            # Player has no normal blocks, move enemy normal blocks towards player special block
+            enemy.move_blocks([player.special_block])
+    else:
+        # Enemy has no normal blocks
+        if player.normal_blocks:
+            # Move enemy special block towards player normal blocks
+            move_towards_first(enemy.special_block, player.normal_blocks)
+        else:
+            # Both have no normal blocks, move special blocks towards each other
+            move_block_towards(enemy.special_block, player.special_block)
 
-    # Check collisions between normal blocks
+    # Check normal block collisions
     if player.normal_blocks and enemy.normal_blocks:
         player_to_remove, enemy_to_remove = check_collisions(player.normal_blocks, enemy.normal_blocks)
-
-        # Remove player blocks safely
+        if player_to_remove or enemy_to_remove:
+            print("Normal block collision detected!")
         for block in player_to_remove:
             if block in player.normal_blocks:
                 player.normal_blocks.remove(block)
-
-        # Remove enemy blocks safely
+                print("Removed player normal block due to collision:", block)
         for block in enemy_to_remove:
             if block in enemy.normal_blocks:
                 enemy.normal_blocks.remove(block)
+                print("Removed enemy normal block due to collision:", block)
 
-    # Special block combat with normal blocks
+    # Player special block attacks enemy normal blocks if player has no normal blocks
     if not player.normal_blocks and enemy.normal_blocks:
-        # Player special block attacks enemy normal blocks
-        player_to_remove, _ = check_collisions([player.special_block], enemy.normal_blocks)
-        for block in player_to_remove:
+        player_to_remove, enemy_to_remove = check_collisions([player.special_block], enemy.normal_blocks)
+        if player_to_remove or enemy_to_remove:
+            print("Player special block hit enemy normal block(s)!")
+        for block in enemy_to_remove:
             if block in enemy.normal_blocks:
                 enemy.normal_blocks.remove(block)
+                print("Removed enemy normal block due to player special attack:", block)
 
+    # Enemy special block attacks player normal blocks if enemy has no normal blocks
     if not enemy.normal_blocks and player.normal_blocks:
-        # Enemy special block attacks player normal blocks
-        enemy_to_remove, _ = check_collisions([enemy.special_block], player.normal_blocks)
-        for block in enemy_to_remove:
+        player_to_remove, enemy_to_remove = check_collisions([enemy.special_block], player.normal_blocks)
+        if player_to_remove or enemy_to_remove:
+            print("Enemy special block hit player normal block(s)!")
+        for block in player_to_remove:
             if block in player.normal_blocks:
                 player.normal_blocks.remove(block)
+                print("Removed player normal block due to enemy special attack:", block)
 
-    # Special block combat at the center
+    # Special block combat
     if not player.normal_blocks and not enemy.normal_blocks:
         if player.special_block.colliderect(enemy.special_block):
+            print("Special block collision! Both sides take damage.")
             player.special_health -= 10
             enemy.special_health -= 10
+            print(f"Player special health: {player.special_health}")
+            print(f"Enemy special health: {enemy.special_health}")
 
-            # Determine winner when one special block's health reaches zero
+            # Check for winner
             if player.special_health <= 0:
                 winner = "enemy"
                 running = False
@@ -108,8 +149,6 @@ while running:
                 winner = "player"
                 running = False
 
-    # Drawing
-    screen.fill((0, 128, 0))  # Background
     player.draw(screen)
     enemy.draw(screen)
 
