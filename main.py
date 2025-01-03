@@ -7,7 +7,7 @@ from resources import *
 
 pygame.init()
 
-# Screen setup
+# Create the game screen
 screen_width = 800
 screen_height = 400
 screen = pygame.display.set_mode((screen_width, screen_height))
@@ -15,19 +15,20 @@ pygame.display.set_caption("AGE OF CHAMPIONS")
 clock = pygame.time.Clock()
 
 
-#Creating variable to load background images
+# I am adding the background battle image that I created myself
 background_image = pygame.image.load('Resources/Battle_Background.png')
 
-# Scale to fit entire screen
+# I will fill the background image to fill the entire screen
 background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
 
+# Put the player in the top left corner of the screen
+player = Player(20, 20, start_screen())
+# Put the Enemy in the top right of the game screen
+enemy = Enemy(760, 20, 20)
 
-# Create player and enemy
-player = Player(20, 20, start_screen())  # Player special block at top-left
-enemy = Enemy(760, 20, 20)  # Enemy special block at top-right
-
-# Fonts for displaying block counts
+# set font/size of the block count on screen
 font = pygame.font.Font(None, 24)
+
 
 def check_collisions(blocks_a, blocks_b):
     """Return the blocks that should be removed from each list due to collision."""
@@ -63,42 +64,37 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    # Add the battle background image
+    # Add the battle background image to the screen
     screen.blit(background_image, (0, 0))
 
-    # Player movement logic
+    # get the players blocks to move toward the enemy
     if player.normal_blocks:
         if enemy.normal_blocks:
             player.move_blocks(enemy.normal_blocks)
         else:
-            # Enemy has no normal blocks, move player normal blocks towards enemy special block
+            # If the enemy army blocks are all removed, have player blocks focus on the main enemy
             player.move_blocks([enemy.special_block])
     else:
-        # Player has no normal blocks
+        # If the player does not have blocks, move the player block to enemies
         if enemy.normal_blocks:
-            # Move player special block towards enemy normal blocks
             move_towards_first(player.special_block, enemy.normal_blocks)
         else:
-            # Both have no normal blocks, move special blocks towards each other
+            # If both have no normal blocks, move special blocks towards each other
             move_block_towards(player.special_block, enemy.special_block)
 
-    # Enemy movement logic
+    # Enemy movement, same logic as the player blocks
     if enemy.normal_blocks:
         if player.normal_blocks:
             enemy.move_blocks(player.normal_blocks)
         else:
-            # Player has no normal blocks, move enemy normal blocks towards player special block
             enemy.move_blocks([player.special_block])
-    else:
-        # Enemy has no normal blocks
+    else:s
         if player.normal_blocks:
-            # Move enemy special block towards player normal blocks
             move_towards_first(enemy.special_block, player.normal_blocks)
         else:
-            # Both have no normal blocks, move special blocks towards each other
             move_block_towards(enemy.special_block, player.special_block)
 
-    # Check normal block collisions
+    # Check normal block collisions and remove block if they collide and Health = 0
     if player.normal_blocks and enemy.normal_blocks:
         player_to_remove, enemy_to_remove = check_collisions(player.normal_blocks, enemy.normal_blocks)
         if player_to_remove or enemy_to_remove:
@@ -141,7 +137,7 @@ while running:
             print(f"Player special health: {player.special_health}")
             print(f"Enemy special health: {enemy.special_health}")
 
-            # Check for winner
+            # Check to see who won the game
             if player.special_health <= 0:
                 winner = "enemy"
                 running = False
@@ -152,13 +148,13 @@ while running:
     player.draw(screen)
     enemy.draw(screen)
 
-    # Display block counts
+    # Show block count on the screen
     player_count_text = font.render(f"Player Blocks: {len(player.normal_blocks)}", True, (255, 255, 255))
     enemy_count_text = font.render(f"Enemy Blocks: {len(enemy.normal_blocks)}", True, (255, 255, 255))
     screen.blit(player_count_text, (10, 10))
     screen.blit(enemy_count_text, (screen_width - 200, 10))
 
-    # Update display
+    # Update the display
     pygame.display.flip()
     clock.tick(60)
 
