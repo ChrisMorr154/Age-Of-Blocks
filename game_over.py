@@ -14,13 +14,13 @@ def game_over_screen(winner):
     small_font = pygame.font.Font(None, 36)
     clock = pygame.time.Clock()
 
-    # Determine message
+    # Figure out which message to display
     if winner == "player":
         message = "YOU WIN!"
-        color = (0, 255, 0)  # Green
+        color = (0, 255, 0)
     else:
         message = "YOU LOSE!"
-        color = (255, 0, 0)  # Red
+        color = (255, 0, 0)
 
     running = True
     while running:
@@ -29,19 +29,19 @@ def game_over_screen(winner):
                 pygame.quit()
                 exit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:  # Restart on Enter
+                if event.key == pygame.K_RETURN:
                     running = False
 
-        # Draw the screen
-        screen.fill((0, 0, 0))  # Black background
+        # Create the sceen
+        screen.fill((0, 0, 0))
         text = font.render(message, True, color)
         small_text = small_font.render("Press Enter to Exit", True, (255, 255, 255))
 
-        # Center the messages
+       # put message in the middle of the screen
         text_rect = text.get_rect(center=(400, 200))
         small_text_rect = small_text.get_rect(center=(400, 300))
 
-        # Render messages
+        # Position and add to screen
         screen.blit(text, text_rect)
         screen.blit(small_text, small_text_rect)
 
