@@ -5,3 +5,31 @@ Age of Blocks is a Python-based recreation of the Facebook strategy game "Age of
 # Please Note
 
 I am no artist and can not or will not create spites and animations for the figures. This is why it is Age of Blocks.
+
+# Features
+
+-
+-
+-
+
+# Technologies Used
+
+
+# Directory Structure
+
+```
+project-folder/
+├── backend                 # contents contain all files for the application backend
+├── node_modules            # Dependencies
+├── NorthSide               # contents contain all files for the frontend
+├── orders                  # order records
+└── README.md               # Project documentation
+```
+
+# Setup Instructions
+
+
+# Future Enhancements
+
+
+# Licensing
