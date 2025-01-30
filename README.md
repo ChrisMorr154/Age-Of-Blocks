@@ -13,7 +13,7 @@ I am no artist and can not or will not create spites and animations for the figu
 - 🕹 Retro-Inspired Aesthetics – A nostalgic throwback to classic strategy games with simple yet engaging visuals.
 
 # Technologies Used
-![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python&logoColor=white)
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 
 # Preview
 
