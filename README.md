@@ -8,9 +8,9 @@ I am no artist and can not or will not create spites and animations for the figu
 
 # Features
 
--🛡 Real-Time Collision Detection – Blocks dynamically interact and clash, ensuring fair and engaging combat.
--⚔ Champion vs. Army Mechanics – Normal units can eliminate enemy champions, creating a balanced yet challenging experience.
--🕹 Retro-Inspired Aesthetics – A nostalgic throwback to classic strategy games with simple yet engaging visuals.
+- 🛡 Real-Time Collision Detection – Blocks dynamically interact and clash, ensuring fair and engaging combat.
+- ⚔ Champion vs. Army Mechanics – Normal units can eliminate enemy champions, creating a balanced yet challenging experience.
+- 🕹 Retro-Inspired Aesthetics – A nostalgic throwback to classic strategy games with simple yet engaging visuals.
 
 # Technologies Used
 ![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python&logoColor=white)
@@ -18,14 +18,15 @@ I am no artist and can not or will not create spites and animations for the figu
 # Preview
 
 - Start Screen
-
+![Project Screenshot](Screenshots/StartScreen.png)
 - Battle screen
-
+![Project Screenshot](Screenshots/BattleScreen.png)
 - Hero Battle
-
+![Project Screenshot](Screenshots/HeroBattle.png)
 - You lose screen
-
+![Project Screenshot](Screenshots/YouLoseScreen.png)
 - You win screen
+![Project Screenshot](Screenshots/YouWinScreen.png)
 
 # Directory Structure
 
