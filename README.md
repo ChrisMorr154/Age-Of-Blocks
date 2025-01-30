@@ -8,28 +8,59 @@ I am no artist and can not or will not create spites and animations for the figu
 
 # Features
 
--
--
--
+-🛡 Real-Time Collision Detection – Blocks dynamically interact and clash, ensuring fair and engaging combat.
+-⚔ Champion vs. Army Mechanics – Normal units can eliminate enemy champions, creating a balanced yet challenging experience.
+-🕹 Retro-Inspired Aesthetics – A nostalgic throwback to classic strategy games with simple yet engaging visuals.
 
 # Technologies Used
+![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python&logoColor=white)
 
+# Preview
+
+- Start Screen
+
+- Battle screen
+
+- Hero Battle
+
+- You lose screen
+
+- You win screen
 
 # Directory Structure
 
 ```
-project-folder/
-├── backend                 # contents contain all files for the application backend
-├── node_modules            # Dependencies
-├── NorthSide               # contents contain all files for the frontend
-├── orders                  # order records
-└── README.md               # Project documentation
+Age-of-Blocks/
+├── __pycache__/                 # Compiled Python files (auto-generated)
+├── resources/                   # Resource files (images)
+├── Screenshots/                 # Folder for screenshots
+├── enemy.py                     # Enemy class and logic
+├── game_over.py                 # Game over screen logic
+├── main.py                      # Main game logic and entry point
+├── player.py                    # Player class and logic
+├── start_screen.py              # Start screen logic
+
 ```
 
 # Setup Instructions
 
+1. Clone the Repository
+git clone https://github.com/your-username/age-of-blocks.git
+cd age-of-blocks
+
+2. Install Python
+Ensure you have Python 3.8+ installed.
+Download Python if needed.
+
+3. Install Dependencies
+pip install pygame
+
+4. Run the Game
+python main.py
 
 # Future Enhancements
 
+Create open world and allow for more enemy's and progression
 
 # Licensing
+This project is licensed under the MIT License.
